@@ -6,6 +6,7 @@ __pycache__/
 venv/
 staticfiles/
 media/
+Pfumelani RIKHOTSO_CV.pdf
 .pytest_cache/
 .coverage
 .DS_Store

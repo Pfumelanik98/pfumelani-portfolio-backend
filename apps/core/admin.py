@@ -3,7 +3,7 @@ from .models import Profile, Skill
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "professional_title", "updated_at")
+    list_display = ("full_name", "professional_title", "email", "phone_number", "updated_at")
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):

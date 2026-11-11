@@ -24,7 +24,18 @@ python manage.py runserver
 
 Set `DATABASE_URL` to a PostgreSQL connection string when using PostgreSQL. For cloud media, set `USE_S3_MEDIA=True` and configure the S3 environment variables. `AWS_S3_ENDPOINT_URL` is optional for AWS and useful for S3-compatible providers such as Cloudflare R2.
 
+## Render deployment
+The included `render.yaml` creates the Django web service. Before deploying:
+1. Create a PostgreSQL database in Render and copy its **internal** connection URL into the web service's `DATABASE_URL` environment variable.
+2. Set `CORS_ALLOWED_ORIGINS` to the exact frontend origin, including `https://` and without a path. Do not use `127.0.0.1` for the live frontend.
+3. Keep `DEBUG=False` and let Render generate `SECRET_KEY`. Render's service hostname is added to `ALLOWED_HOSTS` automatically.
+4. Deploy and check `/api/v1/` and `/admin/`.
+
+The build collects static files and applies migrations. Render's service filesystem is not persistent for uploaded media; configure S3-compatible storage with `USE_S3_MEDIA=True` before uploading a resume or other files. The local SQLite database and its portfolio records are not copied to Render: create the production admin and add/import content after deployment. Never paste secrets into source control.
+
 ## API v1
+Opening the backend root (`/`) redirects to the browsable API index at `/api/v1/`.
+
 | Method | Endpoint | Purpose |
 |---|---|---|
 | GET/PATCH | `/api/v1/profile/` | Public profile; owner edits with JWT |

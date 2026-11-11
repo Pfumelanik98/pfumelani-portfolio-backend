@@ -1,6 +1,7 @@
 from django.test import TestCase
 
-from .serializers import SkillSerializer
+from .models import Profile
+from .serializers import ProfileSerializer, SkillSerializer
 
 
 class SkillPublicationTests(TestCase):
@@ -15,3 +16,13 @@ class SkillPublicationTests(TestCase):
         skill = serializer.save()
 
         self.assertFalse(skill.is_published)
+
+
+class ProfilePhoneNumberTests(TestCase):
+    def test_phone_number_is_included_in_profile_serializer(self):
+        profile = Profile.objects.create(
+            full_name="Pfumelani Rikhotso",
+            phone_number="27604249990",
+        )
+
+        self.assertEqual(ProfileSerializer(profile).data["phone_number"], "27604249990")

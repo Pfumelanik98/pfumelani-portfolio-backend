@@ -4,7 +4,7 @@ from .models import Profile, Skill
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["id", "full_name", "professional_title", "biography", "email", "location", "linkedin_url", "github_url", "profile_image", "updated_at"]
+        fields = ["id", "full_name", "professional_title", "biography", "email", "phone_number", "location", "linkedin_url", "github_url", "profile_image", "updated_at"]
         read_only_fields = ["id", "updated_at"]
 
 class SkillSerializer(serializers.ModelSerializer):

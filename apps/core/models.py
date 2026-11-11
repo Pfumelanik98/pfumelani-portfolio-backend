@@ -5,6 +5,7 @@ class Profile(models.Model):
     professional_title = models.CharField(max_length=150, blank=True)
     biography = models.TextField(blank=True)
     email = models.EmailField(blank=True)
+    phone_number = models.CharField(max_length=32, blank=True)
     location = models.CharField(max_length=150, blank=True)
     linkedin_url = models.URLField(blank=True)
     github_url = models.URLField(blank=True)
