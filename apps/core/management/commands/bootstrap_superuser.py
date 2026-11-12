@@ -16,7 +16,7 @@ ENVIRONMENT_VARIABLES = {
 
 
 class Command(BaseCommand):
-    help = "Create an initial superuser from explicitly enabled environment variables."
+    help = "Create an initial superuser or explicitly reset an existing superuser."
 
     def handle(self, *args, **options):
         configured = {
@@ -40,6 +40,14 @@ class Command(BaseCommand):
                 "Set DJANGO_BOOTSTRAP_SUPERUSER to 'true' to explicitly enable bootstrap."
             )
 
+        reset_existing = os.environ.get(
+            "DJANGO_BOOTSTRAP_SUPERUSER_RESET_EXISTING", "false"
+        ).lower()
+        if reset_existing not in {"true", "false"}:
+            raise CommandError(
+                "DJANGO_BOOTSTRAP_SUPERUSER_RESET_EXISTING must be 'true' or 'false'."
+            )
+
         username = configured["DJANGO_BOOTSTRAP_SUPERUSER_USERNAME"].strip()
         email = configured["DJANGO_BOOTSTRAP_SUPERUSER_EMAIL"].strip()
         password = configured["DJANGO_BOOTSTRAP_SUPERUSER_PASSWORD"]
@@ -59,10 +67,26 @@ class Command(BaseCommand):
             raise CommandError("; ".join(error.messages)) from error
 
         manager = user_model._default_manager
-        if manager.filter(**{username_field: username}).exists():
-            raise CommandError(
-                "A user with that username already exists; no account changes were made."
-            )
+        existing_user = manager.filter(**{username_field: username}).first()
+
+        if existing_user:
+            if reset_existing != "true":
+                raise CommandError(
+                    "A user with that username already exists; no account changes were made. "
+                    "Set DJANGO_BOOTSTRAP_SUPERUSER_RESET_EXISTING=true to explicitly reset "
+                    "an existing superuser password."
+                )
+            if not existing_user.is_superuser:
+                raise CommandError(
+                    "The existing account is not a superuser; no account changes were made."
+                )
+
+            existing_user.set_password(password)
+            if any(field.name == "email" for field in user_model._meta.fields):
+                existing_user.email = email
+            existing_user.save()
+            self.stdout.write("Existing production superuser password updated.")
+            return
 
         manager.db_manager().create_superuser(
             **{
