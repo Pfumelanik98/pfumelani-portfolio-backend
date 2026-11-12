@@ -20,7 +20,10 @@ class Certificate(models.Model):
     title = models.CharField(max_length=200)
     issuer = models.CharField(max_length=200)
     issue_date = models.DateField(null=True, blank=True)
+    expiration_date = models.DateField(null=True, blank=True)
+    credential_id = models.CharField(max_length=200, blank=True)
     credential_url = models.URLField(blank=True)
+    skills = models.JSONField(default=list, blank=True)
     document = models.FileField(upload_to="certificates/", blank=True)
     is_published = models.BooleanField(default=False)
     def __str__(self): return self.title

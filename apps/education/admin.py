@@ -7,7 +7,7 @@ class EducationAdmin(admin.ModelAdmin):
 
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
-    list_display = ("title", "issuer", "issue_date", "is_published")
+    list_display = ("title", "issuer", "issue_date", "expiration_date", "is_published")
     list_filter = ("is_published",)
 
 @admin.register(Resume)
