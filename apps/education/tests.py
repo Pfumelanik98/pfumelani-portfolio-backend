@@ -8,6 +8,10 @@ class CertificatePublicationTests(TestCase):
         serializer = CertificateSerializer(data={
             "title": "Django Certificate",
             "issuer": "Training Provider",
+            "issue_date": "2026-08-01",
+            "expiration_date": "2036-09-01",
+            "credential_id": "ABC-123",
+            "skills": ["Python"],
             "is_published": True,
         })
 
@@ -15,3 +19,6 @@ class CertificatePublicationTests(TestCase):
         certificate = serializer.save()
 
         self.assertTrue(certificate.is_published)
+        self.assertEqual(certificate.expiration_date.isoformat(), "2036-09-01")
+        self.assertEqual(certificate.credential_id, "ABC-123")
+        self.assertEqual(certificate.skills, ["Python"])

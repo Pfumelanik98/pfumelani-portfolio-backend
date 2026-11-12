@@ -16,7 +16,7 @@ class EducationSerializer(serializers.ModelSerializer):
 class CertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
-        fields = ["id", "title", "issuer", "issue_date", "credential_url", "document", "is_published"]
+        fields = ["id", "title", "issuer", "issue_date", "expiration_date", "credential_id", "credential_url", "skills", "document", "is_published"]
         read_only_fields = ["id"]
 
 class ResumeSerializer(serializers.ModelSerializer):
